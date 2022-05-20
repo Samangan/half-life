@@ -11,9 +11,10 @@ import (
 )
 
 const (
-	configFilePath                       = "./config.yaml"
-	slashingPeriodUptimeWarningThreshold = 99.80
-	slashingPeriodUptimeErrorThreshold   = 98
+	configFilePath = "./config.yaml"
+	// PR NOTE TODO: Make these all configurable through the yaml `alerts` section:
+	slashingPeriodUptimeWarningThreshold = 90
+	slashingPeriodUptimeErrorThreshold   = 80
 	recentBlocksToCheck                  = 20
 	notifyEvery                          = 20 // check runs every ~30 seconds, so will notify for continued errors and rollup stats every ~10 mins
 	recentMissedBlocksNotifyThreshold    = 10
@@ -41,6 +42,7 @@ const (
 	alertTypeMissedRecentBlocks           = "alertTypeMissedRecentBlocks"
 	alertTypeGenericRPC                   = "alertTypeGenericRPC"
 	alertTypeHalt                         = "alertTypeHalt"
+	alertTypeSlashingSLA                  = "alertTypeSlashingSLA"
 )
 
 var alertTypes = []AlertType{
@@ -51,6 +53,7 @@ var alertTypes = []AlertType{
 	alertTypeMissedRecentBlocks,
 	alertTypeGenericRPC,
 	alertTypeHalt,
+	alertTypeSlashingSLA,
 }
 
 func (at *AlertType) UnmarshalYAML(unmarshal func(interface{}) error) error {

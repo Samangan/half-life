@@ -52,6 +52,10 @@ func monitorValidator(
 		} else {
 			slashingPeriod = slashingInfo.Params.SignedBlocksWindow
 			stats.SlashingPeriodUptime = 100.0 - 100.0*(float64(signingInfo.MissedBlocksCounter)/float64(slashingPeriod))
+
+			if stats.SlashingPeriodUptime < slashingPeriodUptimeWarningThreshold {
+				errs = append(errs, newSlashingSLAError(stats.SlashingPeriodUptime, slashingPeriodUptimeWarningThreshold))
+			}
 		}
 	}
 	node, err := client.GetNode()
@@ -411,6 +415,12 @@ func getAlertNotification(
 			stats.RPCError = true
 		case *BlockFetchError:
 			handleGenericAlert(err, alertTypeBlockFetch, alertLevelWarning)
+		case *SlashingSLAError:
+			if stats.SlashingPeriodUptime > slashingPeriodUptimeErrorThreshold {
+				handleGenericAlert(err, alertTypeSlashingSLA, alertLevelWarning)
+			} else {
+				handleGenericAlert(err, alertTypeSlashingSLA, alertLevelCritical)
+			}
 		case *MissedRecentBlocksError:
 			addRecentMissedBlocksAlertIfNecessary := func(alertLevel AlertLevel) {
 				if shouldNotifyForFoundAlertType(alertTypeMissedRecentBlocks) || stats.RecentMissedBlocks != recentMissedBlocksCounter {
@@ -521,6 +531,9 @@ func getAlertNotification(
 					}
 					alertState.RecentMissedBlocksCounter = 0
 					alertState.RecentMissedBlocksCounterMax = 0
+				case alertTypeSlashingSLA:
+					alertNotification.ClearedAlerts = append(alertNotification.ClearedAlerts, "slashing sla uptime")
+					alertNotification.NotifyForClear = true
 				default:
 				}
 			}
