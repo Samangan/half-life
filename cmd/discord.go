@@ -116,6 +116,8 @@ func getCurrentStatsEmbed(stats ValidatorStats, vm *ValidatorMonitor) discord.Em
 		} else {
 			rpcStatusIcon = iconGood
 			var recentSignedBlocksIcon string
+
+			// TODO: If you have the recent missed block alerts turned off, then this missed block icon is always green.
 			if stats.RecentMissedBlockAlertLevel >= alertLevelHigh {
 				recentSignedBlocksIcon = iconError
 			} else if stats.RecentMissedBlockAlertLevel == alertLevelWarning {

@@ -417,7 +417,9 @@ func getAlertNotification(
 			handleGenericAlert(err, alertTypeBlockFetch, alertLevelWarning)
 		case *SlashingSLAError:
 			if stats.SlashingPeriodUptime > slashingPeriodUptimeErrorThreshold {
-				handleGenericAlert(err, alertTypeSlashingSLA, alertLevelWarning)
+				if float64(stats.RecentMissedBlocks)/recentBlocksToCheck > 0.5 {
+					handleGenericAlert(err, alertTypeSlashingSLA, alertLevelWarning)
+				}
 			} else {
 				handleGenericAlert(err, alertTypeSlashingSLA, alertLevelCritical)
 			}
