@@ -14,7 +14,7 @@ const (
 	configFilePath = "./config.yaml"
 	// PR NOTE TODO: Make these all configurable through the yaml `alerts` section:
 	slashingPeriodUptimeWarningThreshold = 95
-	slashingPeriodUptimeErrorThreshold   = 70
+	slashingPeriodUptimeErrorThreshold   = 90
 	recentBlocksToCheck                  = 100
 	notifyEvery                          = 20 // check runs every ~30 seconds, so will notify for continued errors and rollup stats every ~10 mins
 	recentMissedBlocksNotifyThreshold    = 10

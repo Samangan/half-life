@@ -416,12 +416,13 @@ func getAlertNotification(
 		case *BlockFetchError:
 			handleGenericAlert(err, alertTypeBlockFetch, alertLevelWarning)
 		case *SlashingSLAError:
-			if stats.SlashingPeriodUptime > slashingPeriodUptimeErrorThreshold {
-				if float64(stats.RecentMissedBlocks)/recentBlocksToCheck > 0.75 {
+			// TODO: This was a short term stop gap to stop flooding alerts, but still be useful
+			if float64(stats.RecentMissedBlocks)/recentBlocksToCheck > 0.75 {
+				if stats.SlashingPeriodUptime > slashingPeriodUptimeErrorThreshold {
 					handleGenericAlert(err, alertTypeSlashingSLA, alertLevelWarning)
+				} else {
+					handleGenericAlert(err, alertTypeSlashingSLA, alertLevelCritical)
 				}
-			} else {
-				handleGenericAlert(err, alertTypeSlashingSLA, alertLevelCritical)
 			}
 		case *MissedRecentBlocksError:
 			addRecentMissedBlocksAlertIfNecessary := func(alertLevel AlertLevel) {
@@ -534,7 +535,7 @@ func getAlertNotification(
 					alertState.RecentMissedBlocksCounter = 0
 					alertState.RecentMissedBlocksCounterMax = 0
 				case alertTypeSlashingSLA:
-					alertNotification.ClearedAlerts = append(alertNotification.ClearedAlerts, "slashing sla uptime")
+					alertNotification.ClearedAlerts = append(alertNotification.ClearedAlerts, "slashing sla uptime recovering")
 					alertNotification.NotifyForClear = true
 				default:
 				}
