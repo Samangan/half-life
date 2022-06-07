@@ -15,7 +15,7 @@ const (
 	// PR NOTE TODO: Make these all configurable through the yaml `alerts` section:
 	slashingPeriodUptimeWarningThreshold = 95
 	slashingPeriodUptimeErrorThreshold   = 70
-	recentBlocksToCheck                  = 20
+	recentBlocksToCheck                  = 100
 	notifyEvery                          = 20 // check runs every ~30 seconds, so will notify for continued errors and rollup stats every ~10 mins
 	recentMissedBlocksNotifyThreshold    = 10
 	sentryGRPCErrorNotifyThreshold       = 1 // will notify with error for any more than this number of consecutive grpc errors for a given sentry
