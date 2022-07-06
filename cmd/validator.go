@@ -421,7 +421,7 @@ func getAlertNotification(
 				if stats.SlashingPeriodUptime > slashingPeriodUptimeErrorThreshold {
 					handleGenericAlert(err, alertTypeSlashingSLA, alertLevelWarning)
 				} else {
-					handleGenericAlert(err, alertTypeSlashingSLA, alertLevelCritical)
+					handleGenericAlert(err, alertTypeSlashingSLA, alertLevelHigh)
 				}
 			}
 		case *MissedRecentBlocksError:
@@ -536,7 +536,9 @@ func getAlertNotification(
 					alertState.RecentMissedBlocksCounterMax = 0
 				case alertTypeSlashingSLA:
 					alertNotification.ClearedAlerts = append(alertNotification.ClearedAlerts, "slashing sla uptime recovering")
-					alertNotification.NotifyForClear = true
+					if stats.AlertLevel > alertLevelWarning {
+						alertNotification.NotifyForClear = true
+					}
 				default:
 				}
 			}
